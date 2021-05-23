@@ -1,23 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import data from "./data/data.json";
+import "./App.css";
+
+let sortedData = data.sort(
+  (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
+);
+
+function getHighestPaid() {
+  let highestPay = data[0].salary;
+  let employee = null;
+  data.map((a) => {
+    if (a.salary > highestPay) {
+      highestPay = a.salary;
+      employee = a.firstname + " " + a.lastname;
+    }
+    return null;
+  });
+  return employee;
+}
+function getLatestJoined() {
+  let recent = new Date(data[0].dateJoined);
+  let employee = null;
+  data.map((a) => {
+    if (new Date(a.dateJoined) >= recent) {
+      recent = new Date(a.dateJoined);
+      employee = a.firstname + " " + a.lastname;
+    }
+    return null;
+  });
+  return employee;
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Employees</h1>
+      <p>Total Employees : {data.length}</p>
+      <p>Highest Paid Employee: {getHighestPaid()}</p>
+      <p>Latest Joined Employee: {getLatestJoined()}</p>
+      {sortedData.map((a, index) => {
+        return (
+          <p key={index}>
+            {a.firstname} | {a.dateJoined} | {a.salary}
+          </p>
+        );
+      })}
     </div>
   );
 }
