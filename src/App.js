@@ -89,13 +89,23 @@ class App extends Component {
       <div className="App">
         <Container>
           <Grid container spacing={3} className="detail-section">
-            <Grid item xs={4} className="total">
-              <PersonIcon />
-              <p>{total}</p>
+            <Grid item xs={4} className="">
+              <Paper className="paper-box total">
+                <PersonIcon />
+                <p>{total}</p>
+              </Paper>
             </Grid>
-            <Grid item xs={8} className="extras">
-              <p>Highest Earning Employee: {highestPaid}</p>
-              <p>Employee Most Recently Joined: {recentlyJoined}</p>
+            <Grid item xs={8} className="">
+              <Paper className="paper-box extras">
+                <div>
+                  <p>
+                    Highest Earning Employee: <span>{highestPaid}</span>
+                  </p>
+                  <p>
+                    Employee Most Recently Joined: <span>{recentlyJoined}</span>
+                  </p>
+                </div>
+              </Paper>
             </Grid>
           </Grid>
           <Grid container spacing={3}>

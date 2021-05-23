@@ -1,12 +1,15 @@
 .App {
   text-align: center;
+  background: #eeeeee;
+  padding-top: 2em;
   // background: red;
   .detail-section {
     display: flex;
     justify-content: space-between;
+    padding-bottom: 1em;
     .total {
       display: flex;
-      // justify-content: center;
+      justify-content: center;
       align-items: center;
       // box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
       //   0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
@@ -19,10 +22,22 @@
     }
     .extras {
       text-align: left;
+      // border: 1px solid red;
+      justify-content: center;
+      align-items: center;
+      display: flex;
       p {
         // margin: 0;
+        span {
+          font-weight: bold;
+        }
       }
     }
+  }
+  .paper-box {
+    // border: 1px solid blue;
+    width: 100%;
+    height: 100%;
   }
   .employee-table {
     thead {
@@ -30,6 +45,13 @@
         cursor: pointer;
         &:hover {
           background: lightgray;
+        }
+      }
+    }
+    tbody {
+      tr {
+        &:hover {
+          background: #eeeeee;
         }
       }
     }
