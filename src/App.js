@@ -1,5 +1,6 @@
 import data from "./data/data.json";
-import moment from "moment";
+import "./App.scss";
+import Moment from "react-moment";
 import {
   Container,
   Grid,
@@ -9,22 +10,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Paper,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-
-let sortedData = data.sort(
-  (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
-);
+import { Component } from "react";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "MYR",
 });
 
-function getHighestPaid() {
-  let highestPay = data[0].salary;
+function getHighestPaid(tag) {
+  let highestPay = tag[0].salary;
   let employee = null;
-  data.map((a) => {
+  tag.map((a) => {
     if (a.salary > highestPay) {
       highestPay = a.salary;
       employee = a.firstname + " " + a.lastname;
@@ -33,10 +32,10 @@ function getHighestPaid() {
   });
   return employee;
 }
-function getLatestJoined() {
-  let recent = new Date(data[0].dateJoined);
+function getLatestJoined(tag) {
+  let recent = new Date(tag[0].dateJoined);
   let employee = null;
-  data.map((a) => {
+  tag.map((a) => {
     if (new Date(a.dateJoined) >= recent) {
       recent = new Date(a.dateJoined);
       employee = a.firstname + " " + a.lastname;
@@ -46,62 +45,102 @@ function getLatestJoined() {
   return employee;
 }
 
-function App() {
-  return (
-    <div className="App">
-      <Container>
-        <h1>Employees</h1>
-        <Grid container spacing={3}>
-          <Grid item xs={7}>
-            <PersonIcon />
-            <p>{data.length}</p>
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      collection: null,
+      total: 0,
+      highestPaid: null,
+      recentlyJoined: null,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({
+      collection: data.sort(
+        (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
+      ),
+      total: data.length,
+      highestPaid: getHighestPaid(data),
+      recentlyJoined: getLatestJoined(data),
+    });
+  }
+  render() {
+    let { collection, total, highestPaid, recentlyJoined } = this.state;
+    const sortName = () => {
+      this.setState({
+        collection: data.sort((a, b) => b.firstname.localeCompare(a.firstname)),
+      });
+    };
+    const sortDate = () => {
+      this.setState({
+        collection: data.sort(
+          (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
+        ),
+      });
+    };
+    const sortSalary = () => {
+      this.setState({
+        collection: data.sort((a, b) => b.salary - a.salary),
+      });
+    };
+    return (
+      <div className="App">
+        <Container>
+          <Grid container spacing={3} className="detail-section">
+            <Grid item xs={4} className="total">
+              <PersonIcon />
+              <p>{total}</p>
+            </Grid>
+            <Grid item xs={8} className="extras">
+              <p>Highest Earning Employee: {highestPaid}</p>
+              <p>Employee Most Recently Joined: {recentlyJoined}</p>
+            </Grid>
           </Grid>
-          <Grid item xs={5}>
-            <p>Highest Earning Employee: {getHighestPaid()}</p>
-            <p>Employee Most Recently Joined: {getLatestJoined()}</p>
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Full Name</TableCell>
-                    <TableCell align="right">Date Joined</TableCell>
-                    <TableCell align="right">Salary</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sortedData.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell component="th" scope="row">
-                        {row.firstname + " " + row.lastname}
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TableContainer component={Paper} className="employee-table">
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell onClick={() => sortName()}>
+                        Full Name
                       </TableCell>
-                      <TableCell align="right">
-                        {moment(row.dateJoined).format("YYYY-MM-DD")}
+                      <TableCell align="center" onClick={() => sortDate()}>
+                        Date Joined
                       </TableCell>
-                      <TableCell align="right">
-                        {formatter.format(row.salary)}
+                      <TableCell align="right" onClick={() => sortSalary()}>
+                        Salary
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {collection &&
+                      collection.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell component="th" scope="row">
+                            {row.firstname + " " + row.lastname}
+                          </TableCell>
+                          <TableCell align="center">
+                            <Moment format="YYYY-MM-DD">
+                              {row.dateJoined}
+                            </Moment>
+                          </TableCell>
+                          <TableCell align="right">
+                            {formatter.format(row.salary)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
           </Grid>
-        </Grid>
-        {/* {sortedData.map((a, index) => {
-          return (
-            <p key={index}>
-              {a.firstname} | {moment(a.dateJoined).format("YYYY-MM-DD")} |{" "}
-              {a.salary}
-            </p>
-          );
-        })} */}
-      </Container>
-    </div>
-  );
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default App;
