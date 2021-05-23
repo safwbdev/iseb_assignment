@@ -1,5 +1,6 @@
 import data from "./data/data.json";
 import "./App.css";
+import moment from "moment";
 
 let sortedData = data.sort(
   (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
@@ -40,7 +41,8 @@ function App() {
       {sortedData.map((a, index) => {
         return (
           <p key={index}>
-            {a.firstname} | {a.dateJoined} | {a.salary}
+            {a.firstname} | {moment(a.dateJoined).format("YYYY-MM-DD")} |{" "}
+            {a.salary}
           </p>
         );
       })}
