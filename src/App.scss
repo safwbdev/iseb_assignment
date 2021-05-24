@@ -43,8 +43,25 @@
     thead {
       th {
         cursor: pointer;
+        // display: flex;
+        // justify-content: center;
         &:hover {
           background: lightgray;
+        }
+        span {
+          display: flex;
+          // justify-content: center;
+          align-items: center;
+        }
+        &.MuiTableCell-alignCenter {
+          span {
+            justify-content: center;
+          }
+        }
+        &.MuiTableCell-alignRight {
+          span {
+            justify-content: flex-end;
+          }
         }
       }
     }

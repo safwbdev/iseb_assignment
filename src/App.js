@@ -13,6 +13,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
+import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import { Component } from "react";
 
 const formatter = new Intl.NumberFormat("en-US", {
@@ -53,6 +54,9 @@ class App extends Component {
       total: 0,
       highestPaid: null,
       recentlyJoined: null,
+      dateDesc: true,
+      nameDesc: false,
+      salaryDesc: false,
     };
   }
 
@@ -67,10 +71,21 @@ class App extends Component {
     });
   }
   render() {
-    let { collection, total, highestPaid, recentlyJoined } = this.state;
+    let {
+      collection,
+      total,
+      highestPaid,
+      recentlyJoined,
+      dateDesc,
+      nameDesc,
+      salaryDesc,
+    } = this.state;
     const sortName = () => {
       this.setState({
         collection: data.sort((a, b) => b.firstname.localeCompare(a.firstname)),
+        dateDesc: false,
+        nameDesc: true,
+        salaryDesc: false,
       });
     };
     const sortDate = () => {
@@ -78,11 +93,17 @@ class App extends Component {
         collection: data.sort(
           (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
         ),
+        dateDesc: true,
+        nameDesc: false,
+        salaryDesc: false,
       });
     };
     const sortSalary = () => {
       this.setState({
         collection: data.sort((a, b) => b.salary - a.salary),
+        dateDesc: false,
+        nameDesc: false,
+        salaryDesc: true,
       });
     };
     return (
@@ -115,13 +136,20 @@ class App extends Component {
                   <TableHead>
                     <TableRow>
                       <TableCell onClick={() => sortName()}>
-                        Full Name
+                        <span>
+                          Full Name Salary{" "}
+                          {nameDesc ? <ArrowDropUpIcon /> : null}
+                        </span>
                       </TableCell>
                       <TableCell align="center" onClick={() => sortDate()}>
-                        Date Joined
+                        <span>
+                          Date Joined {dateDesc ? <ArrowDropUpIcon /> : null}
+                        </span>
                       </TableCell>
                       <TableCell align="right" onClick={() => sortSalary()}>
-                        Salary
+                        <span>
+                          Salary {salaryDesc ? <ArrowDropUpIcon /> : null}
+                        </span>
                       </TableCell>
                     </TableRow>
                   </TableHead>
