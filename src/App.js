@@ -110,13 +110,13 @@ class App extends Component {
       <div className="App">
         <Container>
           <Grid container spacing={3} className="detail-section">
-            <Grid item xs={4} className="">
+            <Grid item xs={12} md={4} className="">
               <Paper className="paper-box total">
                 <PersonIcon />
                 <p>{total}</p>
               </Paper>
             </Grid>
-            <Grid item xs={8} className="">
+            <Grid item xs={12} md={8} className="">
               <Paper className="paper-box extras">
                 <div>
                   <p>
@@ -137,7 +137,7 @@ class App extends Component {
                     <TableRow>
                       <TableCell onClick={() => sortName()}>
                         <span>
-                          Full Name Salary{" "}
+                          Full Name
                           {nameDesc ? <ArrowDropUpIcon /> : null}
                         </span>
                       </TableCell>
