@@ -55,6 +55,14 @@
         span {
           display: flex;
           align-items: center;
+          svg {
+            display: none;
+          }
+          &.active {
+            svg {
+              display: block;
+            }
+          }
         }
         &.MuiTableCell-alignCenter {
           span {

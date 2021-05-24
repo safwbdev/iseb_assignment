@@ -18,11 +18,6 @@ import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
 import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 import Moment from "react-moment";
 
-const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "MYR",
-});
-
 class App extends Component {
   constructor() {
     super();
@@ -32,11 +27,9 @@ class App extends Component {
       highestPaid: null,
       recentlyJoined: null,
       dateDesc: true,
-      dateAsc: false,
       nameDesc: false,
-      nameAsc: false,
       salaryDesc: false,
-      salaryAsc: false,
+      active: "date",
       headers: [
         { name: "name", title: "Full Name", align: "left" },
         { name: "date", title: "Date Joined", align: "center" },
@@ -62,51 +55,89 @@ class App extends Component {
       highestPaid,
       recentlyJoined,
       dateDesc,
-      dateAsc,
       nameDesc,
-      nameAsc,
       salaryDesc,
-      salaryAsc,
+      active,
       headers,
     } = this.state;
+
+    const formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "MYR",
+    });
 
     const sortColumn = (tag) => {
       let collection = null;
       switch (tag) {
         case "name":
-          collection = data.sort((a, b) =>
-            a.firstname.localeCompare(b.firstname)
-          );
-          console.log("NAME");
+          if (nameDesc) {
+            collection = data.sort((a, b) =>
+              a.firstname.localeCompare(b.firstname)
+            );
+          }
+          if (!nameDesc) {
+            collection = data.sort((a, b) =>
+              b.firstname.localeCompare(a.firstname)
+            );
+          }
           this.setState({
             collection: collection,
             dateDesc: false,
-            nameDesc: true,
+            nameDesc: !nameDesc,
             salaryDesc: false,
+            active: "name",
           });
           break;
         case "date":
-          collection = data.sort(
-            (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
-          );
-          console.log("DATE");
+          if (dateDesc) {
+            collection = data.sort(
+              (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
+            );
+          }
+          if (!dateDesc) {
+            collection = data.sort(
+              (a, b) => new Date(a.dateJoined) - new Date(b.dateJoined)
+            );
+          }
           this.setState({
             collection: collection,
-            dateDesc: true,
+            dateDesc: !dateDesc,
             nameDesc: false,
             salaryDesc: false,
+            active: "date",
           });
           break;
         case "salary":
-          console.log("SALARY");
-          collection = data.sort((a, b) => b.salary - a.salary);
+          if (salaryDesc) {
+            collection = data.sort((a, b) => b.salary - a.salary);
+          }
+          if (!salaryDesc) {
+            collection = data.sort((a, b) => a.salary - b.salary);
+          }
           this.setState({
             collection: collection,
             dateDesc: false,
             nameDesc: false,
-            salaryDesc: true,
+            salaryDesc: !salaryDesc,
+            active: "salary",
           });
           break;
+        default:
+          return null;
+      }
+    };
+
+    const sortArrow = (tag) => {
+      switch (tag) {
+        case "name":
+          return nameDesc ? <ArrowDropUpIcon /> : <ArrowDropDown />;
+        // break;
+        case "date":
+          return dateDesc ? <ArrowDropUpIcon /> : <ArrowDropDown />;
+        // break;
+        case "salary":
+          return salaryDesc ? <ArrowDropUpIcon /> : <ArrowDropDown />;
+        // break;
         default:
           return null;
       }
@@ -135,26 +166,8 @@ class App extends Component {
                             align={align}
                             onClick={() => sortColumn(name)}
                           >
-                            <span>
-                              {title}{" "}
-                              {name === "date" && dateDesc ? (
-                                <ArrowDropUpIcon />
-                              ) : null}
-                              {name === "date" && dateAsc ? (
-                                <ArrowDropDown />
-                              ) : null}
-                              {name === "name" && nameDesc ? (
-                                <ArrowDropUpIcon />
-                              ) : null}
-                              {name === "name" && nameAsc ? (
-                                <ArrowDropDown />
-                              ) : null}
-                              {name === "salary" && salaryDesc ? (
-                                <ArrowDropUpIcon />
-                              ) : null}
-                              {name === "salary" && salaryAsc ? (
-                                <ArrowDropDown />
-                              ) : null}
+                            <span className={active === name ? "active" : null}>
+                              {title} {sortArrow(name)}
                             </span>
                           </TableCell>
                         ))}
