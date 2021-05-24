@@ -2,7 +2,7 @@ import { Component } from "react";
 import data from "./data/data.json";
 import "./App.scss";
 import Total from "./components/Total";
-import Extra from "./components/Extra";
+import { Extra, getHighestPaid, getLatestJoined } from "./components/Extra";
 import {
   Container,
   Grid,
@@ -22,31 +22,6 @@ const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "MYR",
 });
-
-function getHighestPaid(tag) {
-  let highestPay = tag[0].salary;
-  let employee = null;
-  tag.map((a) => {
-    if (a.salary > highestPay) {
-      highestPay = a.salary;
-      employee = a.firstname + " " + a.lastname;
-    }
-    return null;
-  });
-  return employee;
-}
-function getLatestJoined(tag) {
-  let recent = new Date(tag[0].dateJoined);
-  let employee = null;
-  tag.map((a) => {
-    if (new Date(a.dateJoined) >= recent) {
-      recent = new Date(a.dateJoined);
-      employee = a.firstname + " " + a.lastname;
-    }
-    return null;
-  });
-  return employee;
-}
 
 class App extends Component {
   constructor() {
