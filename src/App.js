@@ -1,6 +1,8 @@
+import { Component } from "react";
 import data from "./data/data.json";
 import "./App.scss";
-import Moment from "react-moment";
+import Total from "./components/Total";
+import Extra from "./components/Extra";
 import {
   Container,
   Grid,
@@ -12,9 +14,9 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core";
-import PersonIcon from "@material-ui/icons/Person";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import { Component } from "react";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import Moment from "react-moment";
 
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -55,8 +57,16 @@ class App extends Component {
       highestPaid: null,
       recentlyJoined: null,
       dateDesc: true,
+      dateAsc: false,
       nameDesc: false,
+      nameAsc: false,
       salaryDesc: false,
+      salaryAsc: false,
+      headers: [
+        { name: "name", title: "Full Name", align: "left" },
+        { name: "date", title: "Date Joined", align: "center" },
+        { name: "salary", title: "Salary", align: "right" },
+      ],
     };
   }
 
@@ -77,56 +87,64 @@ class App extends Component {
       highestPaid,
       recentlyJoined,
       dateDesc,
+      dateAsc,
       nameDesc,
+      nameAsc,
       salaryDesc,
+      salaryAsc,
+      headers,
     } = this.state;
-    const sortName = () => {
-      this.setState({
-        collection: data.sort((a, b) => b.firstname.localeCompare(a.firstname)),
-        dateDesc: false,
-        nameDesc: true,
-        salaryDesc: false,
-      });
-    };
-    const sortDate = () => {
-      this.setState({
-        collection: data.sort(
-          (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
-        ),
-        dateDesc: true,
-        nameDesc: false,
-        salaryDesc: false,
-      });
-    };
-    const sortSalary = () => {
-      this.setState({
-        collection: data.sort((a, b) => b.salary - a.salary),
-        dateDesc: false,
-        nameDesc: false,
-        salaryDesc: true,
-      });
+
+    const sortColumn = (tag) => {
+      let collection = null;
+      switch (tag) {
+        case "name":
+          collection = data.sort((a, b) =>
+            a.firstname.localeCompare(b.firstname)
+          );
+          console.log("NAME");
+          this.setState({
+            collection: collection,
+            dateDesc: false,
+            nameDesc: true,
+            salaryDesc: false,
+          });
+          break;
+        case "date":
+          collection = data.sort(
+            (a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)
+          );
+          console.log("DATE");
+          this.setState({
+            collection: collection,
+            dateDesc: true,
+            nameDesc: false,
+            salaryDesc: false,
+          });
+          break;
+        case "salary":
+          console.log("SALARY");
+          collection = data.sort((a, b) => b.salary - a.salary);
+          this.setState({
+            collection: collection,
+            dateDesc: false,
+            nameDesc: false,
+            salaryDesc: true,
+          });
+          break;
+        default:
+          return null;
+      }
     };
     return (
       <div className="App">
         <Container>
           <Grid container spacing={3} className="detail-section">
-            <Grid item xs={12} md={4} className="">
-              <Paper className="paper-box total">
-                <PersonIcon />
-                <p>{total}</p>
-              </Paper>
+            <Grid item xs={12} md={4}>
+              <Total data={total} />
             </Grid>
-            <Grid item xs={12} md={8} className="">
-              <Paper className="paper-box extras">
-                <div>
-                  <p>
-                    Highest Earning Employee: <span>{highestPaid}</span>
-                  </p>
-                  <p>
-                    Employee Most Recently Joined: <span>{recentlyJoined}</span>
-                  </p>
-                </div>
-              </Paper>
+            <Grid item xs={12} md={8}>
+              <Extra paidData={highestPaid} joinedData={recentlyJoined} />
             </Grid>
           </Grid>
           <Grid container spacing={3}>
@@ -135,22 +153,36 @@ class App extends Component {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell onClick={() => sortName()}>
-                        <span>
-                          Full Name
-                          {nameDesc ? <ArrowDropUpIcon /> : null}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center" onClick={() => sortDate()}>
-                        <span>
-                          Date Joined {dateDesc ? <ArrowDropUpIcon /> : null}
-                        </span>
-                      </TableCell>
-                      <TableCell align="right" onClick={() => sortSalary()}>
-                        <span>
-                          Salary {salaryDesc ? <ArrowDropUpIcon /> : null}
-                        </span>
-                      </TableCell>
+                      {headers &&
+                        headers.map(({ name, title, align }, index) => (
+                          <TableCell
+                            key={index}
+                            align={align}
+                            onClick={() => sortColumn(name)}
+                          >
+                            <span>
+                              {title}{" "}
+                              {name === "date" && dateDesc ? (
+                                <ArrowDropUpIcon />
+                              ) : null}
+                              {name === "date" && dateAsc ? (
+                                <ArrowDropDown />
+                              ) : null}
+                              {name === "name" && nameDesc ? (
+                                <ArrowDropUpIcon />
+                              ) : null}
+                              {name === "name" && nameAsc ? (
+                                <ArrowDropDown />
+                              ) : null}
+                              {name === "salary" && salaryDesc ? (
+                                <ArrowDropUpIcon />
+                              ) : null}
+                              {name === "salary" && salaryAsc ? (
+                                <ArrowDropDown />
+                              ) : null}
+                            </span>
+                          </TableCell>
+                        ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>
