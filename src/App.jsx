@@ -1,6 +1,6 @@
 import { Component } from "react";
 import data from "./data/data.json";
-import "./App.scss";
+import "./styles/App.scss";
 import Total from "./components/Total";
 import { Extra, getHighestPaid, getLatestJoined } from "./components/Extra";
 import {
