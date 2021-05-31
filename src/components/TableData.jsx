@@ -1,4 +1,5 @@
 import {useState, useEffect } from "react";
+import Row from './Row'
 import {
     Grid,
     Table,
@@ -9,7 +10,6 @@ import {
     TableRow, 
     Paper,
   } from "@material-ui/core";
-  import Moment from "react-moment";
   import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
   import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 
@@ -25,10 +25,7 @@ const TableData =({tableData})=>{
         { name: "salary", title: "Salary", align: "right" },
       ];
 
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "MYR",
-      });
+    
 
     useEffect(() => {
       setCollection(tableData.sort((a, b) => new Date(b.dateJoined) - new Date(a.dateJoined)))
@@ -128,19 +125,7 @@ const TableData =({tableData})=>{
               <TableBody>
                 {collectionData &&
                   collectionData.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell component="th" scope="row">
-                        {row.firstname + " " + row.lastname}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Moment format="YYYY-MM-DD">
-                          {row.dateJoined}
-                        </Moment>
-                      </TableCell>
-                      <TableCell align="right">
-                        {formatter.format(row.salary)}
-                      </TableCell>
-                    </TableRow>
+                    <Row key={index} fName={row.firstname} lName={row.lastname} date={row.dateJoined} salary={row.salary}/>
                   ))}
               </TableBody>
             </Table>
